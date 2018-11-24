@@ -11,7 +11,8 @@ export function prepareWordsForConversion(words = []) {
   if (Array.isArray(words)) {
     return R.pipe(
       R.filter(w => R.not(R.isEmpty(w))),
-      R.filter(w => typeof w === 'string')
+      R.filter(w => typeof w === 'string'),
+      R.map(R.toLower)
     )(words)
   } else {
     console.error('words shoud be an array')

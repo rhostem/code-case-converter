@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
 export function isPascalCase(str = '') {
-  return /^[A-Z][a-z0-9]+([A-Z][a-z0-9]+)+/.test(str)
+  return /\b([A-Z][a-z0-9]+([A-Z][a-z0-9]+)+)\b/.test(str)
 }
 
 export function splitPascalCase(str = '') {
