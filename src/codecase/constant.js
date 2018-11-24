@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
 export function isConstantCase(str = '') {
-  return /\b([A-Z][A-Z0-9]+(?:_[A-Z][A-Z0-9]+)+)\b/.test(str)
+  return /\b([A-Z][A-Z0-9]+(?:_[A-Z0-9]+)+)\b/.test(str)
 }
 
 /**
@@ -12,7 +12,7 @@ export function isConstantCase(str = '') {
 export function splitConstantCase(str) {
   if (isConstantCase(str)) {
     return str
-      .split(/\B(?=_[A-Z][A-Z0-9]+)/g)
+      .split(/\B(?=_[A-Z0-9]+)/g)
       .map(R.toLower)
       .map(w => w.replace(/_/g, ''))
   } else {
