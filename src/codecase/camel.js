@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import { prepareWordsForConversion } from './util'
 
 export function isCamelCase(str = '') {
   return /^[a-z][a-z0-9]+([A-Z][a-z0-9]{1,})+$/.test(str)
@@ -9,23 +10,6 @@ export function splitCamelCase(str) {
     return str.split(/\B(?=[A-Z][a-z]+)/g).map(R.toLower)
   } else {
     return [str]
-  }
-}
-
-/**
- * prepare for case  conversion
- * all items should be lower case and
- * @param {*} words
- */
-function prepareWordsForConversion(words = []) {
-  if (Array.isArray(words)) {
-    return R.pipe(
-      R.filter(w => R.not(R.isEmpty(w))),
-      R.filter(w => typeof w === 'string')
-    )(words)
-  } else {
-    console.error('words shoud be an array')
-    return words
   }
 }
 
