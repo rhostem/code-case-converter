@@ -17,7 +17,6 @@ describe('camel case', () => {
   })
 
   test('is not camel case', () => {
-    expect(isCamelCase(SNAKE_SAMPLE)).toBe(false)
     expect(isCamelCase(PASCAL_SAMPLE)).toBe(false)
     expect(isCamelCase(CONSTANT_SAMPLE)).toBe(false)
     expect(isCamelCase(KEBAB_SAMPLE)).toBe(false)
