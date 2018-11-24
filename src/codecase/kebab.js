@@ -12,7 +12,7 @@ export function isKebabCase(str = '') {
 export function splitKebabCase(str) {
   if (isKebabCase(str)) {
     return str
-      .split(/\b(?=-[a-z][a-z0-9]+)/g)
+      .split(/(?=-[a-z][a-z0-9]+)/g)
       .map(R.toLower)
       .map(w => w.replace(/-/g, ''))
   } else {
