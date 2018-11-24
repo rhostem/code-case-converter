@@ -28,9 +28,7 @@ describe('constant case', () => {
   })
 
   test('separate word into array of lowercase', () => {
-    expect(R.equals(WORDS_SAMPLE, splitConstantCase(CONSTANT_SAMPLE))).toBe(
-      true
-    )
+    expect(WORDS_SAMPLE).toEqual(splitConstantCase(CONSTANT_SAMPLE))
   })
 
   test('convert to constantcase', () => {
