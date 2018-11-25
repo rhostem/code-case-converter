@@ -16,12 +16,13 @@ import { isPascalCase, splitPascalCase, convertToPascal } from 'codecase/pascal'
 import { isSnakeCase, splitSnakeCase, convertToSnake } from 'codecase/snake'
 import keyProxy from 'utils/keyProxy'
 import { replacer } from 'codecase/replacer'
+import AceEditor from 'react-ace'
+import 'brace/mode/javascript'
+import 'brace/theme/tomorrow'
 
-const Preview = styled.pre`
-  margin: 0;
-  border: 1px solid #eee;
-  text-align: left;
-  white-space: pre-wrap;
+const EditorWrap = styled.div`
+  padding: 4px;
+  background: #e1e1e1;
 `
 
 const ResultArea = styled.div`
@@ -48,13 +49,13 @@ class Converter extends Component {
     this.state = {
       search: 'listUser',
       replace: 'updateItem',
-      inputText: `
-listUser
-ListUser
-LIST_USER
-list-user
-list_user
-`,
+      inputText: `const codeCases = \`
+  listUser
+  ListUser
+  LIST_USER
+  list-user
+  list_user
+\``,
       resultText: '',
       searchCaseOption: ALL_CASE,
       replaceCaseOption: AS_IS,
@@ -124,7 +125,7 @@ list_user
     }
   }
 
-  get replaceCaseConverter() {
+  get caseConverterSelected() {
     switch (this.state.replaceCaseOption) {
       case CAMEL:
         return convertToCamel
@@ -170,9 +171,8 @@ list_user
     this.setState({ replace: e.target.value })
   }
 
-  handleChangeInputText = e => {
-    this.setState({ inputText: e.target.value })
-    this.setState({ resultText: e.target.value })
+  handleChangeInputText = text => {
+    this.setState({ inputText: text })
   }
 
   convertInputText = () => {
@@ -193,35 +193,35 @@ list_user
           convertToCamel(this.searchWords),
           replaceCaseOption === AS_IS
             ? convertToCamel(this.replaceWords)
-            : this.replaceCaseConverter(this.replaceWords)
+            : this.caseConverterSelected(this.replaceWords)
         )
         resultText = replacer(
           resultText,
           convertToConstant(this.searchWords),
           replaceCaseOption === AS_IS
             ? convertToConstant(this.replaceWords)
-            : this.replaceCaseConverter(this.replaceWords)
+            : this.caseConverterSelected(this.replaceWords)
         )
         resultText = replacer(
           resultText,
           convertToPascal(this.searchWords),
           replaceCaseOption === AS_IS
             ? convertToPascal(this.replaceWords)
-            : this.replaceCaseConverter(this.replaceWords)
+            : this.caseConverterSelected(this.replaceWords)
         )
         resultText = replacer(
           resultText,
           convertToKebab(this.searchWords),
           replaceCaseOption === AS_IS
             ? convertToKebab(this.replaceWords)
-            : this.replaceCaseConverter(this.replaceWords)
+            : this.caseConverterSelected(this.replaceWords)
         )
         resultText = replacer(
           resultText,
           convertToSnake(this.searchWords),
           replaceCaseOption === AS_IS
             ? convertToSnake(this.replaceWords)
-            : this.replaceCaseConverter(this.replaceWords)
+            : this.caseConverterSelected(this.replaceWords)
         )
       } else {
         // convert specific case of searching
@@ -232,7 +232,7 @@ list_user
               convertToCamel(this.searchWords),
               replaceCaseOption === AS_IS
                 ? convertToCamel(this.replaceWords)
-                : this.replaceCaseConverter(this.replaceWords)
+                : this.caseConverterSelected(this.replaceWords)
             )
             break
 
@@ -242,7 +242,7 @@ list_user
               convertToPascal(this.searchWords),
               replaceCaseOption === AS_IS
                 ? convertToPascal(this.replaceWords)
-                : this.replaceCaseConverter(this.replaceWords)
+                : this.caseConverterSelected(this.replaceWords)
             )
             break
 
@@ -450,7 +450,7 @@ list_user
                   {convertToCamel(this.searchWords)} =>{' '}
                   {replaceCaseOption === AS_IS
                     ? convertToCamel(this.replaceWords)
-                    : this.replaceCaseConverter(this.replaceWords)}
+                    : this.caseConverterSelected(this.replaceWords)}
                 </div>
               )}
               {(searchCaseOption === ALL_CASE ||
@@ -459,7 +459,7 @@ list_user
                   {convertToPascal(this.searchWords)} =>{' '}
                   {replaceCaseOption === AS_IS
                     ? convertToPascal(this.replaceWords)
-                    : this.replaceCaseConverter(this.replaceWords)}
+                    : this.caseConverterSelected(this.replaceWords)}
                 </div>
               )}
               {(searchCaseOption === ALL_CASE ||
@@ -468,7 +468,7 @@ list_user
                   {convertToConstant(this.searchWords)} =>{' '}
                   {replaceCaseOption === AS_IS
                     ? convertToConstant(this.replaceWords)
-                    : this.replaceCaseConverter(this.replaceWords)}
+                    : this.caseConverterSelected(this.replaceWords)}
                 </div>
               )}
               {(searchCaseOption === ALL_CASE ||
@@ -477,7 +477,7 @@ list_user
                   {convertToKebab(this.searchWords)} =>{' '}
                   {replaceCaseOption === AS_IS
                     ? convertToKebab(this.replaceWords)
-                    : this.replaceCaseConverter(this.replaceWords)}
+                    : this.caseConverterSelected(this.replaceWords)}
                 </div>
               )}
               {(searchCaseOption === ALL_CASE ||
@@ -486,7 +486,7 @@ list_user
                   {convertToSnake(this.searchWords)} =>{' '}
                   {replaceCaseOption === AS_IS
                     ? convertToSnake(this.replaceWords)
-                    : this.replaceCaseConverter(this.replaceWords)}
+                    : this.caseConverterSelected(this.replaceWords)}
                 </div>
               )}
             </React.Fragment>
@@ -494,14 +494,34 @@ list_user
         </div>
 
         <ResultArea>
-          <TextArea
-            id="inputText"
-            value={this.state.inputText}
-            onChange={this.handleChangeInputText}
-            style={{ fontFamily: 'monospace' }}
-          />
-
-          <Preview>{this.state.resultText}</Preview>
+          <EditorWrap>
+            <AceEditor
+              mode="javascript"
+              theme="tomorrow"
+              value={this.state.inputText}
+              onChange={this.handleChangeInputText}
+              name="inputText"
+              editorProps={{ $blockScrolling: true }}
+              showGutter={false}
+              tabSize={2}
+              fontSize={14}
+            />
+          </EditorWrap>
+          <EditorWrap>
+            <AceEditor
+              readOnly={true}
+              mode="javascript"
+              theme="tomorrow"
+              value={this.state.resultText}
+              name="resultText"
+              editorProps={{ $blockScrolling: true }}
+              showGutter={false}
+              tabSize={2}
+              fontSize={14}
+              highlightActiveLine={false}
+              focus={false}
+            />
+          </EditorWrap>
         </ResultArea>
       </Page>
     )
