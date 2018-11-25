@@ -195,7 +195,6 @@ list_user
             ? convertToCamel(this.replaceWords)
             : this.replaceCaseConverter(this.replaceWords)
         )
-
         resultText = replacer(
           resultText,
           convertToConstant(this.searchWords),
@@ -274,12 +273,6 @@ list_user
           default:
             break
         }
-
-        resultText = replacer(
-          resultText,
-          convertToCamel(this.searchWords),
-          convertToCamel(this.replaceWords)
-        )
       }
     }
 
