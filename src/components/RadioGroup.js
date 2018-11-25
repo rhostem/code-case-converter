@@ -3,7 +3,7 @@ import styled from 'styled-components'
 // import mixin from 'styles/mixin'
 
 const Wrap = styled.div`
-  display: flex;
+  display: inline-flex;
   align-items: center;
   & > input {
     &:disabled + label {
@@ -16,7 +16,7 @@ const Wrap = styled.div`
     position: relative;
     padding-left: 5px;
     margin-right: 1rem;
-    min-width: 80px;
+    min-width: 60px;
 
     &:hover {
       cursor: pointer;

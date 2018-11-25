@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import TextArea from 'components/TextArea'
 import Input from 'components/Input'
 import RadioGroup from 'components/RadioGroup'
 import * as R from 'ramda'
@@ -19,10 +18,38 @@ import { replacer } from 'codecase/replacer'
 import AceEditor from 'react-ace'
 import 'brace/mode/javascript'
 import 'brace/theme/tomorrow'
+import mixin from 'styles/mixin'
+import media from 'styles/media'
 
 const EditorWrap = styled.div`
-  padding: 4px;
-  background: #e1e1e1;
+  padding: 4px 0;
+  border: 4px solid #e1e1e1;
+`
+
+const InputAndOption = styled.div`
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  align-items: center;
+  justify-content: space-between;
+
+  & > * {
+    &:nth-child(1) {
+      flex: 1;
+    }
+    &:nth-child(2) {
+      margin-left: 2rem;
+      flex: 3;
+    }
+  }
+
+  ${media.smallOnly} {
+    flex-direction: column;
+  }
+`
+
+const SearchInputWrap = styled.div`
+  width: 200px;
 `
 
 const ResultArea = styled.div`
@@ -39,8 +66,23 @@ const ResultArea = styled.div`
 
 const { ALL_CASE, AS_IS, CAMEL, PASCAL, CONSTANT, KEBAB, SNAKE } = keyProxy
 
-const InputAndOption = styled.div`
+const SearchReplacePreview = styled.div`
+  font-family: monospace;
   display: flex;
+  & > * {
+    &:nth-child(1) {
+      flex: 3;
+      text-align: right;
+    }
+    &:nth-child(2) {
+      width: 40px;
+      text-align: center;
+    }
+    &:nth-child(3) {
+      flex: 3;
+      text-align: left;
+    }
+  }
 `
 
 class Converter extends Component {
@@ -250,7 +292,9 @@ class Converter extends Component {
             resultText = replacer(
               resultText,
               convertToConstant(this.searchWords),
-              convertToConstant(this.replaceWords)
+              replaceCaseOption === AS_IS
+                ? convertToConstant(this.replaceWords)
+                : this.caseConverterSelected(this.replaceWords)
             )
             break
 
@@ -258,7 +302,9 @@ class Converter extends Component {
             resultText = replacer(
               resultText,
               convertToKebab(this.searchWords),
-              convertToKebab(this.replaceWords)
+              replaceCaseOption === AS_IS
+                ? convertToKebab(this.replaceWords)
+                : this.caseConverterSelected(this.replaceWords)
             )
             break
 
@@ -266,7 +312,9 @@ class Converter extends Component {
             resultText = replacer(
               resultText,
               convertToSnake(this.searchWords),
-              convertToSnake(this.replaceWords)
+              replaceCaseOption === AS_IS
+                ? convertToSnake(this.replaceWords)
+                : this.caseConverterSelected(this.replaceWords)
             )
             break
 
@@ -286,15 +334,17 @@ class Converter extends Component {
 
     return (
       <Page>
-        <h1>code case converter</h1>
+        <h1>Code Case Converter</h1>
+
+        <h2>search</h2>
         <InputAndOption>
-          <div>
+          <SearchInputWrap>
             <Input
               placeholder="search"
               value={this.state.search}
               onChange={this.handleChangeSearch}
             />
-          </div>
+          </SearchInputWrap>
           <RadioGroup>
             <input
               type="radio"
@@ -305,7 +355,7 @@ class Converter extends Component {
               checked={searchCaseOption === ALL_CASE}
               onChange={() => this.setState({ searchCaseOption: ALL_CASE })}
             />
-            <label htmlFor="search_all_case">all_case</label>
+            <label htmlFor="search_all_case">All cases</label>
             <input
               type="radio"
               id="search_camel"
@@ -359,17 +409,15 @@ class Converter extends Component {
           </RadioGroup>
         </InputAndOption>
 
-        <hr />
-        <div>to</div>
-        <hr />
+        <h2>replace</h2>
         <InputAndOption>
-          <div>
+          <SearchInputWrap>
             <Input
               placeholder="replace"
               value={this.state.replace}
               onChange={this.handleChangeReplace}
             />
-          </div>
+          </SearchInputWrap>
           <RadioGroup>
             <input
               type="radio"
@@ -379,7 +427,7 @@ class Converter extends Component {
               checked={replaceCaseOption === AS_IS}
               onChange={() => this.setState({ replaceCaseOption: AS_IS })}
             />
-            <label htmlFor="replace_as_is">as is</label>
+            <label htmlFor="replace_as_is">as-is</label>
             <input
               type="radio"
               id="replace_camel"
@@ -437,57 +485,74 @@ class Converter extends Component {
           <h2>preview search and replace</h2>
 
           {this.isSearchNormalCase && (
-            <div>
-              {this.state.search} => {this.replace}
-            </div>
+            <SearchReplacePreview>
+              <div>{this.state.search}</div>
+              <div>→</div>
+              <div>{this.replace}</div>
+            </SearchReplacePreview>
           )}
 
           {R.not(this.isSearchNormalCase) && (
             <React.Fragment>
               {(searchCaseOption === ALL_CASE ||
                 searchCaseOption === CAMEL) && (
-                <div>
-                  {convertToCamel(this.searchWords)} =>{' '}
-                  {replaceCaseOption === AS_IS
-                    ? convertToCamel(this.replaceWords)
-                    : this.caseConverterSelected(this.replaceWords)}
-                </div>
+                <SearchReplacePreview>
+                  <div>{convertToCamel(this.searchWords)}</div>
+                  <div>→</div>
+                  <div>
+                    {replaceCaseOption === AS_IS
+                      ? convertToCamel(this.replaceWords)
+                      : this.caseConverterSelected(this.replaceWords)}
+                  </div>
+                </SearchReplacePreview>
               )}
               {(searchCaseOption === ALL_CASE ||
                 searchCaseOption === PASCAL) && (
-                <div>
-                  {convertToPascal(this.searchWords)} =>{' '}
-                  {replaceCaseOption === AS_IS
-                    ? convertToPascal(this.replaceWords)
-                    : this.caseConverterSelected(this.replaceWords)}
-                </div>
+                <SearchReplacePreview>
+                  <div>{convertToPascal(this.searchWords)}</div>
+                  <div>→</div>
+                  <div>
+                    {replaceCaseOption === AS_IS
+                      ? convertToPascal(this.replaceWords)
+                      : this.caseConverterSelected(this.replaceWords)}
+                  </div>
+                </SearchReplacePreview>
               )}
               {(searchCaseOption === ALL_CASE ||
                 searchCaseOption === CONSTANT) && (
-                <div>
-                  {convertToConstant(this.searchWords)} =>{' '}
-                  {replaceCaseOption === AS_IS
-                    ? convertToConstant(this.replaceWords)
-                    : this.caseConverterSelected(this.replaceWords)}
-                </div>
+                <SearchReplacePreview>
+                  <div>{convertToConstant(this.searchWords)}</div>
+                  <div>→</div>
+                  <div>
+                    {replaceCaseOption === AS_IS
+                      ? convertToConstant(this.replaceWords)
+                      : this.caseConverterSelected(this.replaceWords)}
+                  </div>
+                </SearchReplacePreview>
               )}
               {(searchCaseOption === ALL_CASE ||
                 searchCaseOption === KEBAB) && (
-                <div>
-                  {convertToKebab(this.searchWords)} =>{' '}
-                  {replaceCaseOption === AS_IS
-                    ? convertToKebab(this.replaceWords)
-                    : this.caseConverterSelected(this.replaceWords)}
-                </div>
+                <SearchReplacePreview>
+                  <div>{convertToKebab(this.searchWords)}</div>
+                  <div>→</div>
+                  <div>
+                    {replaceCaseOption === AS_IS
+                      ? convertToKebab(this.replaceWords)
+                      : this.caseConverterSelected(this.replaceWords)}
+                  </div>
+                </SearchReplacePreview>
               )}
               {(searchCaseOption === ALL_CASE ||
                 searchCaseOption === SNAKE) && (
-                <div>
-                  {convertToSnake(this.searchWords)} =>{' '}
-                  {replaceCaseOption === AS_IS
-                    ? convertToSnake(this.replaceWords)
-                    : this.caseConverterSelected(this.replaceWords)}
-                </div>
+                <SearchReplacePreview>
+                  <div>{convertToSnake(this.searchWords)}</div>
+                  <div>→</div>
+                  <div>
+                    {replaceCaseOption === AS_IS
+                      ? convertToSnake(this.replaceWords)
+                      : this.caseConverterSelected(this.replaceWords)}
+                  </div>
+                </SearchReplacePreview>
               )}
             </React.Fragment>
           )}
@@ -505,6 +570,7 @@ class Converter extends Component {
               showGutter={false}
               tabSize={2}
               fontSize={14}
+              style={{ width: '100%', padding: '0.5rem' }}
             />
           </EditorWrap>
           <EditorWrap>
@@ -519,7 +585,7 @@ class Converter extends Component {
               tabSize={2}
               fontSize={14}
               highlightActiveLine={false}
-              focus={false}
+              style={{ width: '100%', padding: '0.5rem' }}
             />
           </EditorWrap>
         </ResultArea>
