@@ -21,9 +21,11 @@ export function splitSnakeCase(str) {
 }
 
 export function convertToSnake(words = []) {
-  return R.pipe(
-    prepareWordsForConversion,
-    R.map(R.toLower),
-    R.join('_')
-  )(words)
+  return Array.isArray(words)
+    ? R.pipe(
+        prepareWordsForConversion,
+        R.map(R.toLower),
+        R.join('_')
+      )(words)
+    : words
 }

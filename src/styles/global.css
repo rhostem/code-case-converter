@@ -31,7 +31,7 @@ li {
 }
 
 input {
-  -webkit-appearance: none;
+  /* -webkit-appearance: none; */
 }
 
 input[type='text'] {

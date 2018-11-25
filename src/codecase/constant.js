@@ -21,9 +21,11 @@ export function splitConstantCase(str) {
 }
 
 export function convertToConstant(words = []) {
-  return R.pipe(
-    prepareWordsForConversion,
-    R.map(R.toUpper),
-    R.join('_')
-  )(words)
+  return Array.isArray(words)
+    ? R.pipe(
+        prepareWordsForConversion,
+        R.map(R.toUpper),
+        R.join('_')
+      )(words)
+    : words
 }

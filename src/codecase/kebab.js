@@ -21,9 +21,11 @@ export function splitKebabCase(str) {
 }
 
 export function convertToKebab(words = []) {
-  return R.pipe(
-    prepareWordsForConversion,
-    R.map(R.toLower),
-    R.join('-')
-  )(words)
+  return Array.isArray(words)
+    ? R.pipe(
+        prepareWordsForConversion,
+        R.map(R.toLower),
+        R.join('-')
+      )(words)
+    : words
 }

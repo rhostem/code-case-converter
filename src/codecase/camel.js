@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
 export function isCamelCase(str = '') {
-  return /\b([a-z][a-z0-9]+(?:[A-Z][a-z0-9]+)+)\b/.test(str)
+  return /([a-z][a-z0-9]+(?:[A-Z][a-z0-9]+)+)/.test(str)
 }
 
 /**
@@ -17,18 +17,24 @@ export function splitCamelCase(str) {
   }
 }
 
+/**
+ * convert array of lowercase word into camel case
+ * @param {} words
+ */
 export function convertToCamel(words = []) {
-  return R.pipe(
-    prepareWordsForConversion,
-    wordArr => {
-      return wordArr.map((word, index) => {
-        if (index !== 0) {
-          return `${word[0].toUpperCase()}${word.slice(1, word.length)}`
-        } else {
-          return word
-        }
-      })
-    },
-    R.join('')
-  )(words)
+  return Array.isArray(words)
+    ? R.pipe(
+        prepareWordsForConversion,
+        wordArr => {
+          return wordArr.map((word, index) => {
+            if (index !== 0) {
+              return `${word[0].toUpperCase()}${word.slice(1, word.length)}`
+            } else {
+              return word
+            }
+          })
+        },
+        R.join('')
+      )(words)
+    : words
 }

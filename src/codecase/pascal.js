@@ -14,9 +14,11 @@ export function splitPascalCase(str = '') {
 }
 
 export function convertToPascal(words) {
-  return R.pipe(
-    prepareWordsForConversion,
-    R.map(word => `${word[0].toUpperCase()}${word.slice(1, word.length)}`),
-    R.join('')
-  )(words)
+  return Array.isArray(words)
+    ? R.pipe(
+        prepareWordsForConversion,
+        R.map(word => `${word[0].toUpperCase()}${word.slice(1, word.length)}`),
+        R.join('')
+      )(words)
+    : words
 }
