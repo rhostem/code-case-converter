@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
 export function isCamelCase(str = '') {
-  return /([a-z][a-z0-9]+(?:[A-Z][a-z0-9]+)+)/.test(str)
+  return /\b([a-z][a-z0-9]+(?:[A-Z][a-z0-9]+)+)/.test(str)
 }
 
 /**

@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
 export function isSnakeCase(str = '') {
-  return /\b([a-z][a-z0-9]+(?:_[a-z0-9]+)+)\b/.test(str)
+  return /\b([a-z][a-z0-9]+(?:_[a-z0-9]+)+)/.test(str)
 }
 
 /**

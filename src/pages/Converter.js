@@ -46,25 +46,14 @@ class Converter extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      search: 'ReadList',
-      replace: 'UpdateUser',
+      search: 'listUser',
+      replace: 'updateItem',
       inputText: `
-import { createActions } from 'redux-actions'
-import { ReadListActionOption, ListCallData } from 'store/commonState/list'
-import { makeAsyncType } from 'utils/redux'
-import { mypageActions } from 'store/mypage/mypageActions'
-
-export const types = {
-  ...makeAsyncType('LIST_USER_DB'),
-  ...makeAsyncType('BUY_USER_DB'),
-  ...makeAsyncType('DASHBOARD'),
-}
-
-export const userDbActions = createActions({
-  [types.REQ_LIST_USER_DB]: (option: ReadListActionOption) => option,
-  [types.REQ_LIST_USER_DB_DONE]: (d: ListCallData) => d,
-  [types.REQ_LIST_USER_DB_FAIL]: undefined,
-})
+listUser
+ListUser
+LIST_USER
+list-user
+list_user
 `,
       resultText: '',
       searchCaseOption: ALL_CASE,
@@ -206,6 +195,7 @@ export const userDbActions = createActions({
             ? convertToCamel(this.replaceWords)
             : this.replaceCaseConverter(this.replaceWords)
         )
+
         resultText = replacer(
           resultText,
           convertToConstant(this.searchWords),
