@@ -1,25 +1,28 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import Input from 'components/Input'
-import RadioGroup from 'components/RadioGroup'
+import AceEditor from 'react-ace'
+import 'brace/mode/javascript'
+import 'brace/theme/tomorrow'
+import Input from '../components/Input'
+import RadioGroup from '../components/RadioGroup'
 import * as R from 'ramda'
-import { Page } from 'components/Layout'
-import { isCamelCase, convertToCamel, splitCamelCase } from 'codecase/camel'
+import { Page } from '../components/Layout'
+import { isCamelCase, convertToCamel, splitCamelCase } from '../codecase/camel'
 import {
   isConstantCase,
   convertToConstant,
   splitConstantCase,
-} from 'codecase/constant'
-import { isKebabCase, splitKebabCase, convertToKebab } from 'codecase/kebab'
-import { isPascalCase, splitPascalCase, convertToPascal } from 'codecase/pascal'
-import { isSnakeCase, splitSnakeCase, convertToSnake } from 'codecase/snake'
-import keyProxy from 'utils/keyProxy'
-import { replacer } from 'codecase/replacer'
-import AceEditor from 'react-ace'
-import 'brace/mode/javascript'
-import 'brace/theme/tomorrow'
-import mixin from 'styles/mixin'
-import media from 'styles/media'
+} from '../codecase/constant'
+import { isKebabCase, splitKebabCase, convertToKebab } from '../codecase/kebab'
+import {
+  isPascalCase,
+  splitPascalCase,
+  convertToPascal,
+} from '../codecase/pascal'
+import { isSnakeCase, splitSnakeCase, convertToSnake } from '../codecase/snake'
+import keyProxy from '../utils/keyProxy'
+import { replacer } from '../codecase/replacer'
+import media from '../styles/media'
 
 const EditorWrap = styled.div`
   padding: 4px 0;
