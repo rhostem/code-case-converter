@@ -11,7 +11,7 @@ jobs:
     working_directory: ~/repos
     steps:
       - attach_workspace:
-        at: /tmp/workspace
+          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -23,9 +23,9 @@ jobs:
       - run: npm run build
 
       - persist_to_workspace:
-        root: /tmp/workspace
-        paths:
-          - build
+          root: /tmp/workspace
+          paths:
+            - build
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package.json" }}
@@ -38,7 +38,7 @@ jobs:
     working_directory: ~/repos
     steps:
       - attach_workspace:
-        at: /tmp/workspace
+          at: /tmp/workspace
       - run:
           name: Deploy Master to Firebase
           command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
