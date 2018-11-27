@@ -26,6 +26,7 @@ jobs:
           root: /tmp/workspace
           paths:
             - firebase.json
+            - .firebaserc
             - build/*
             - node_modules/*
 
