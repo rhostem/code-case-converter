@@ -2,62 +2,56 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
+
+references:
+  node_deps_cache_key: &node_deps_cache_key v1-dependencies-{{ checksum "package.json" }}
+  node_deps_backup_cache_key: &node_deps_backup_cache_key v1-dependencies-{{ checksum "package.json" }}
+  workspace_root: &workspace_root /tmp/workspace
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+executors:
+  my-executor:
+    docker:
+      - image: circleci/node:10.11.0
+    working_directory: ~/repos
+
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:10.11.0
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-    working_directory: /tmp/my-project
+    executor: my-executor
     steps:
+      - *attach_workspace
       - checkout
-
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-
+            - *node_deps_cache_key
+            - *node_deps_backup_cache_key
       - run: npm install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
       - run: npm test
-
       - run: npm run build
 
-  deploy-prod:
-    docker:
-      - image: circleci/node:10.11.0
-    working_directory: /tmp/my-project
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-
-      - run: npm install
+      - persist_to_workspace:
+        root: *workspace_root
+        paths:
+          - build
 
       - save_cache:
+          key: *node_deps_cache_key
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
 
+  deploy-prod:
+    executor: my-executor
+    steps:
+      - *attach_workspace
       - run:
           name: Deploy Master to Firebase
           command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
 
 workflows:
-  version: 2
+  version: 2.1
   build-deploy:
     jobs:
       - build
