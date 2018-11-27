@@ -42,7 +42,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Deploy Master to Firebase
-          command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
+          command: ./node_modules/firebase-tools/lib/bin/firebase.js deploy --token=$FIREBASE_DEPLOY_TOKEN
 
 workflows:
   version: 2
