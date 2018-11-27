@@ -26,6 +26,7 @@ jobs:
           root: /tmp/workspace
           paths:
             - build/*
+            - node_modules/firebase-tools/lib/bin/firebase.js
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package.json" }}
