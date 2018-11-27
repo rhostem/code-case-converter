@@ -25,8 +25,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
-            - build/*
-            - node_modules/*
+            - *
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package.json" }}
