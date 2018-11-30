@@ -22,7 +22,6 @@ import {
 import { isSnakeCase, splitSnakeCase, convertToSnake } from '../codecase/snake'
 import keyProxy from '../utils/keyProxy'
 import { replacer } from '../codecase/replacer'
-import media from '../styles/media'
 
 const { ALL_CASE, AS_IS, CAMEL, PASCAL, CONSTANT, KEBAB, SNAKE } = keyProxy
 
