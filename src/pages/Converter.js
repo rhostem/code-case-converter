@@ -23,36 +23,45 @@ import { isSnakeCase, splitSnakeCase, convertToSnake } from '../codecase/snake'
 import keyProxy from '../utils/keyProxy'
 import { replacer } from '../codecase/replacer'
 import media from '../styles/media'
+const { ALL_CASE, AS_IS, CAMEL, PASCAL, CONSTANT, KEBAB, SNAKE } = keyProxy
+
+const PageTitle = styled.h1`
+  font-size: 2.2rem;
+`
+
+const SectionTitle = styled.h2`
+  font-weight: bold;
+  font-size: 1.5rem;
+`
 
 const EditorWrap = styled.div`
   padding: 4px 0;
   border: 4px solid #e1e1e1;
 `
 
-const InputAndOption = styled.div`
+const SearchInputContainer = styled.div`
   display: flex;
-  width: 100%;
-  overflow: hidden;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  margin-bottom: 2.5rem;
 
   & > * {
-    &:nth-child(1) {
-      flex: 1;
+    &:first-child {
+      margin-right: 2rem;
     }
-    &:nth-child(2) {
-      margin-left: 2rem;
-      flex: 3;
-    }
-  }
-
-  ${media.smallOnly} {
-    flex-direction: column;
   }
 `
 
+const InputAndOption = styled.div`
+  display: flex;
+  /* width: 400px; */
+  overflow: hidden;
+  flex-direction: column;
+  align-items: flex-start;
+`
+
 const SearchInputWrap = styled.div`
-  width: 200px;
+  width: 100%;
+  margin-bottom: 0.5rem;
 `
 
 const ResultArea = styled.div`
@@ -67,23 +76,23 @@ const ResultArea = styled.div`
   }
 `
 
-const { ALL_CASE, AS_IS, CAMEL, PASCAL, CONSTANT, KEBAB, SNAKE } = keyProxy
+const ReplacePreviewContainer = styled.div`
+  min-height: 11rem;
+`
 
 const SearchReplacePreview = styled.div`
   font-family: monospace;
   display: flex;
+  margin-bottom: 0.5rem;
+
   & > * {
     &:nth-child(1) {
-      flex: 3;
-      text-align: right;
     }
     &:nth-child(2) {
       width: 40px;
       text-align: center;
     }
     &:nth-child(3) {
-      flex: 3;
-      text-align: left;
     }
   }
 `
@@ -337,155 +346,179 @@ class Converter extends Component {
 
     return (
       <Page>
-        <h1>Code Case Converter</h1>
+        <PageTitle>Code Case Converter</PageTitle>
 
-        <h2>search</h2>
-        <InputAndOption>
-          <SearchInputWrap>
-            <Input
-              placeholder="search"
-              value={this.state.search}
-              onChange={this.handleChangeSearch}
-            />
-          </SearchInputWrap>
-          <RadioGroup>
-            <input
-              type="radio"
-              id="search_all_case"
-              name="search_option"
-              value={ALL_CASE}
-              disabled={this.isSearchNormalCase}
-              checked={searchCaseOption === ALL_CASE}
-              onChange={() => this.setState({ searchCaseOption: ALL_CASE })}
-            />
-            <label htmlFor="search_all_case">All cases</label>
-            <input
-              type="radio"
-              id="search_camel"
-              name="search_option"
-              value={CAMEL}
-              disabled={this.isSearchNormalCase}
-              checked={searchCaseOption === CAMEL}
-              onChange={() => this.setState({ searchCaseOption: CAMEL })}
-            />
-            <label htmlFor="search_camel">camel</label>
-            <input
-              type="radio"
-              id="search_pascal"
-              name="search_option"
-              value={PASCAL}
-              disabled={this.isSearchNormalCase}
-              checked={searchCaseOption === PASCAL}
-              onChange={() => this.setState({ searchCaseOption: PASCAL })}
-            />
-            <label htmlFor="search_pascal">pascal</label>
-            <input
-              type="radio"
-              id="search_constant"
-              name="search_option"
-              value={CONSTANT}
-              disabled={this.isSearchNormalCase}
-              checked={searchCaseOption === CONSTANT}
-              onChange={() => this.setState({ searchCaseOption: CONSTANT })}
-            />
-            <label htmlFor="search_constant">constant</label>
-            <input
-              type="radio"
-              id="search_kebab"
-              name="search_option"
-              value={KEBAB}
-              disabled={this.isSearchNormalCase}
-              checked={searchCaseOption === KEBAB}
-              onChange={() => this.setState({ searchCaseOption: KEBAB })}
-            />
-            <label htmlFor="search_kebab">kebab</label>
-            <input
-              type="radio"
-              id="search_snake"
-              name="search_option"
-              value={SNAKE}
-              disabled={this.isSearchNormalCase}
-              checked={searchCaseOption === SNAKE}
-              onChange={() => this.setState({ searchCaseOption: SNAKE })}
-            />
-            <label htmlFor="search_snake">snake</label>
-          </RadioGroup>
-        </InputAndOption>
+        <hr />
 
-        <h2>replace</h2>
-        <InputAndOption>
-          <SearchInputWrap>
-            <Input
-              placeholder="replace"
-              value={this.state.replace}
-              onChange={this.handleChangeReplace}
-            />
-          </SearchInputWrap>
-          <RadioGroup>
-            <input
-              type="radio"
-              id="replace_as_is"
-              name="replace_option"
-              value={AS_IS}
-              checked={replaceCaseOption === AS_IS}
-              onChange={() => this.setState({ replaceCaseOption: AS_IS })}
-            />
-            <label htmlFor="replace_as_is">as-is</label>
-            <input
-              type="radio"
-              id="replace_camel"
-              name="replace_option"
-              value={CAMEL}
-              disabled={this.isSearchNormalCase}
-              checked={replaceCaseOption === CAMEL}
-              onChange={() => this.setState({ replaceCaseOption: CAMEL })}
-            />
-            <label htmlFor="replace_camel">camel</label>
-            <input
-              type="radio"
-              id="replace_pascal"
-              name="replace_option"
-              value={PASCAL}
-              disabled={this.isSearchNormalCase}
-              checked={replaceCaseOption === PASCAL}
-              onChange={() => this.setState({ replaceCaseOption: PASCAL })}
-            />
-            <label htmlFor="replace_pascal">pascal</label>
-            <input
-              type="radio"
-              id="replace_constant"
-              name="replace_option"
-              value={CONSTANT}
-              disabled={this.isSearchNormalCase}
-              checked={replaceCaseOption === CONSTANT}
-              onChange={() => this.setState({ replaceCaseOption: CONSTANT })}
-            />
-            <label htmlFor="replace_constant">constant</label>
-            <input
-              type="radio"
-              id="replace_kebab"
-              name="replace_option"
-              value={KEBAB}
-              disabled={this.isSearchNormalCase}
-              checked={replaceCaseOption === KEBAB}
-              onChange={() => this.setState({ replaceCaseOption: KEBAB })}
-            />
-            <label htmlFor="replace_kebab">kebab</label>
-            <input
-              type="radio"
-              id="replace_snake"
-              name="replace_option"
-              value={SNAKE}
-              disabled={this.isSearchNormalCase}
-              checked={replaceCaseOption === SNAKE}
-              onChange={() => this.setState({ replaceCaseOption: SNAKE })}
-            />
-            <label htmlFor="replace_snake">snake</label>
-          </RadioGroup>
-        </InputAndOption>
+        <SearchInputContainer>
+          <InputAndOption>
+            <SectionTitle>Search</SectionTitle>
+            <SearchInputWrap>
+              <Input
+                placeholder="search"
+                value={this.state.search}
+                onChange={this.handleChangeSearch}
+              />
+            </SearchInputWrap>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="search_all_case"
+                name="search_option"
+                value={ALL_CASE}
+                disabled={this.isSearchNormalCase}
+                checked={searchCaseOption === ALL_CASE}
+                onChange={() => this.setState({ searchCaseOption: ALL_CASE })}
+              />
+              <label htmlFor="search_all_case">All cases</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="search_camel"
+                name="search_option"
+                value={CAMEL}
+                disabled={this.isSearchNormalCase}
+                checked={searchCaseOption === CAMEL}
+                onChange={() => this.setState({ searchCaseOption: CAMEL })}
+              />
+              <label htmlFor="search_camel">camel</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="search_pascal"
+                name="search_option"
+                value={PASCAL}
+                disabled={this.isSearchNormalCase}
+                checked={searchCaseOption === PASCAL}
+                onChange={() => this.setState({ searchCaseOption: PASCAL })}
+              />
+              <label htmlFor="search_pascal">pascal</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="search_constant"
+                name="search_option"
+                value={CONSTANT}
+                disabled={this.isSearchNormalCase}
+                checked={searchCaseOption === CONSTANT}
+                onChange={() => this.setState({ searchCaseOption: CONSTANT })}
+              />
+              <label htmlFor="search_constant">constant</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="search_kebab"
+                name="search_option"
+                value={KEBAB}
+                disabled={this.isSearchNormalCase}
+                checked={searchCaseOption === KEBAB}
+                onChange={() => this.setState({ searchCaseOption: KEBAB })}
+              />
+              <label htmlFor="search_kebab">kebab</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="search_snake"
+                name="search_option"
+                value={SNAKE}
+                disabled={this.isSearchNormalCase}
+                checked={searchCaseOption === SNAKE}
+                onChange={() => this.setState({ searchCaseOption: SNAKE })}
+              />
+              <label htmlFor="search_snake">snake</label>
+            </RadioGroup>
+          </InputAndOption>
 
-        <div>
-          <h2>preview search and replace</h2>
+          <InputAndOption>
+            <SectionTitle>Replace</SectionTitle>
+            <SearchInputWrap>
+              <Input
+                placeholder="replace"
+                value={this.state.replace}
+                onChange={this.handleChangeReplace}
+              />
+            </SearchInputWrap>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="replace_as_is"
+                name="replace_option"
+                value={AS_IS}
+                checked={replaceCaseOption === AS_IS}
+                onChange={() => this.setState({ replaceCaseOption: AS_IS })}
+              />
+              <label htmlFor="replace_as_is">as-is</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="replace_camel"
+                name="replace_option"
+                value={CAMEL}
+                disabled={this.isSearchNormalCase}
+                checked={replaceCaseOption === CAMEL}
+                onChange={() => this.setState({ replaceCaseOption: CAMEL })}
+              />
+              <label htmlFor="replace_camel">camel</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="replace_pascal"
+                name="replace_option"
+                value={PASCAL}
+                disabled={this.isSearchNormalCase}
+                checked={replaceCaseOption === PASCAL}
+                onChange={() => this.setState({ replaceCaseOption: PASCAL })}
+              />
+              <label htmlFor="replace_pascal">pascal</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="replace_constant"
+                name="replace_option"
+                value={CONSTANT}
+                disabled={this.isSearchNormalCase}
+                checked={replaceCaseOption === CONSTANT}
+                onChange={() => this.setState({ replaceCaseOption: CONSTANT })}
+              />
+              <label htmlFor="replace_constant">constant</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="replace_kebab"
+                name="replace_option"
+                value={KEBAB}
+                disabled={this.isSearchNormalCase}
+                checked={replaceCaseOption === KEBAB}
+                onChange={() => this.setState({ replaceCaseOption: KEBAB })}
+              />
+              <label htmlFor="replace_kebab">kebab</label>
+            </RadioGroup>
+            <RadioGroup>
+              <input
+                type="radio"
+                id="replace_snake"
+                name="replace_option"
+                value={SNAKE}
+                disabled={this.isSearchNormalCase}
+                checked={replaceCaseOption === SNAKE}
+                onChange={() => this.setState({ replaceCaseOption: SNAKE })}
+              />
+              <label htmlFor="replace_snake">snake</label>
+            </RadioGroup>
+          </InputAndOption>
+        </SearchInputContainer>
+
+        <ReplacePreviewContainer>
+          <SectionTitle>Preview</SectionTitle>
 
           {this.isSearchNormalCase && (
             <SearchReplacePreview>
@@ -559,7 +592,7 @@ class Converter extends Component {
               )}
             </React.Fragment>
           )}
-        </div>
+        </ReplacePreviewContainer>
 
         <ResultArea>
           <EditorWrap>

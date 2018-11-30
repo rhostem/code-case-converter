@@ -5,6 +5,7 @@ import styled from 'styled-components'
 const Wrap = styled.div`
   display: inline-flex;
   align-items: center;
+  padding: 0.5rem 0.1rem;
   & > input {
     &:disabled + label {
       color: #c2c2c2;
