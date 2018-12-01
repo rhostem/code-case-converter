@@ -2,11 +2,9 @@
   "presets": ["react-app"],
   "plugins": [
     [
-      [
-        "styled-components",
-        { "ssr": false, "displayName": true, "preprocess": false }
-      ],
-      "transform-flow-strip-types"
-    ]
+      "styled-components",
+      { "ssr": false, "displayName": true, "preprocess": false }
+    ],
+    "transform-flow-strip-types"
   ]
 }

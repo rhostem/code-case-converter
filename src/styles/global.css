@@ -4,6 +4,9 @@
 }
 
 html {
+  font-family: 'Fira Sans Condensed', sans-serif, apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-size: 14px;
   line-height: 1.4;
   background-color: #fff;
@@ -13,12 +16,11 @@ html {
 
 body {
   position: relative;
-  font-family: 'Spoqa Han Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol';
   margin: 0;
   padding: 0;
   background-color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ol,
@@ -67,4 +69,12 @@ button:hover {
 
 select {
   -webkit-appearance: none;
+}
+
+pre {
+  font-family: 'Fira Mono', monospace, Menlo, Monaco, Consolas;
+}
+
+code {
+  font-family: 'Fira Mono', monospace, Menlo, Monaco, Consolas;
 }
