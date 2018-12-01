@@ -1,4 +1,4 @@
-import { isSnake, splitPascal, convertToSnake } from './snake'
+import { isSnake, splitSnake, convertToSnake } from './snake'
 import {
   WORDS_SAMPLE,
   WORDS_WITH_NUM,
@@ -25,9 +25,9 @@ describe('snake case', () => {
   })
 
   test('separate snake case string into array of lowercase', () => {
-    expect(splitPascal(SNAKE_SAMPLE)).toEqual(WORDS_SAMPLE)
-    expect(splitPascal(SNAKE_WITH_NUM)).toEqual(WORDS_WITH_NUM)
-    expect(splitPascal('last_one_1')).toEqual(['last', 'one', '1'])
+    expect(splitSnake(SNAKE_SAMPLE)).toEqual(WORDS_SAMPLE)
+    expect(splitSnake(SNAKE_WITH_NUM)).toEqual(WORDS_WITH_NUM)
+    expect(splitSnake('last_one_1')).toEqual(['last', 'one', '1'])
   })
 
   test('convert to snakecase', () => {
