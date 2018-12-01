@@ -158,11 +158,11 @@ class Converter extends Component {
   /**
    * case converters selected by user
    */
-  get replaceConverters() {
-    const { replaceCaseOption } = this.state
+  get targetConverters() {
+    const { searchCaseOption } = this.state
 
-    switch (replaceCaseOption) {
-      case AS_IS:
+    switch (searchCaseOption) {
+      case ALL_CASE:
         return [
           convertToCamel,
           convertToPascal,
@@ -215,11 +215,11 @@ class Converter extends Component {
     ])(this.state.search)
   }
 
-  get searchWordsForConvert() {
+  get searchWordsForConversion() {
     return splitWordToConvert(this.state.search)
   }
 
-  get replaceWordsForConvert() {
+  get replaceWordsForConversion() {
     return splitWordToConvert(this.state.replace)
   }
 
@@ -284,100 +284,15 @@ class Converter extends Component {
     if (this.isSearchNormalCase) {
       resultText = replacer(resultText, this.state.search, this.state.replace)
     } else {
-      // convert all case of search
-      if (this.state.searchCaseOption === ALL_CASE) {
-        resultText = replacer(
-          resultText,
-          convertToCamel(this.searchWordsForConvert),
+      resultText = this.targetConverters.reduce((resultInWork, converter) => {
+        return replacer(
+          resultInWork,
+          converter(this.searchWordsForConversion),
           replaceCaseOption === AS_IS
-            ? convertToCamel(this.replaceWordsForConvert)
-            : this.caseConverterSelected(this.replaceWordsForConvert)
+            ? converter(this.replaceWordsForConversion)
+            : this.caseConverterSelected(this.replaceWordsForConversion)
         )
-        resultText = replacer(
-          resultText,
-          convertToConstant(this.searchWordsForConvert),
-          replaceCaseOption === AS_IS
-            ? convertToConstant(this.replaceWordsForConvert)
-            : this.caseConverterSelected(this.replaceWordsForConvert)
-        )
-        resultText = replacer(
-          resultText,
-          convertToPascal(this.searchWordsForConvert),
-          replaceCaseOption === AS_IS
-            ? convertToPascal(this.replaceWordsForConvert)
-            : this.caseConverterSelected(this.replaceWordsForConvert)
-        )
-        resultText = replacer(
-          resultText,
-          convertToKebab(this.searchWordsForConvert),
-          replaceCaseOption === AS_IS
-            ? convertToKebab(this.replaceWordsForConvert)
-            : this.caseConverterSelected(this.replaceWordsForConvert)
-        )
-        resultText = replacer(
-          resultText,
-          convertToSnake(this.searchWordsForConvert),
-          replaceCaseOption === AS_IS
-            ? convertToSnake(this.replaceWordsForConvert)
-            : this.caseConverterSelected(this.replaceWordsForConvert)
-        )
-      } else {
-        // convert specific case of searching
-        switch (this.state.searchCaseOption) {
-          case CAMEL:
-            resultText = replacer(
-              resultText,
-              convertToCamel(this.searchWordsForConvert),
-              replaceCaseOption === AS_IS
-                ? convertToCamel(this.replaceWordsForConvert)
-                : this.caseConverterSelected(this.replaceWordsForConvert)
-            )
-            break
-
-          case PASCAL:
-            resultText = replacer(
-              resultText,
-              convertToPascal(this.searchWordsForConvert),
-              replaceCaseOption === AS_IS
-                ? convertToPascal(this.replaceWordsForConvert)
-                : this.caseConverterSelected(this.replaceWordsForConvert)
-            )
-            break
-
-          case CONSTANT:
-            resultText = replacer(
-              resultText,
-              convertToConstant(this.searchWordsForConvert),
-              replaceCaseOption === AS_IS
-                ? convertToConstant(this.replaceWordsForConvert)
-                : this.caseConverterSelected(this.replaceWordsForConvert)
-            )
-            break
-
-          case KEBAB:
-            resultText = replacer(
-              resultText,
-              convertToKebab(this.searchWordsForConvert),
-              replaceCaseOption === AS_IS
-                ? convertToKebab(this.replaceWordsForConvert)
-                : this.caseConverterSelected(this.replaceWordsForConvert)
-            )
-            break
-
-          case SNAKE:
-            resultText = replacer(
-              resultText,
-              convertToSnake(this.searchWordsForConvert),
-              replaceCaseOption === AS_IS
-                ? convertToSnake(this.replaceWordsForConvert)
-                : this.caseConverterSelected(this.replaceWordsForConvert)
-            )
-            break
-
-          default:
-            break
-        }
-      }
+      }, this.state.inputText)
     }
 
     this.setState({
@@ -478,7 +393,6 @@ class Converter extends Component {
                   <React.Fragment>
                     {this.replaceTargetCases.map(targetCase => {
                       const converter = converterMap[targetCase]
-
                       return (
                         converter &&
                         ((searchCaseOption === ALL_CASE ||
@@ -486,17 +400,17 @@ class Converter extends Component {
                           <SearchReplacePreview key={targetCase}>
                             <code>
                               {converterMap[targetCase](
-                                this.searchWordsForConvert
+                                this.searchWordsForConversion
                               )}
                             </code>
                             <code>→</code>
                             <code>
                               {replaceCaseOption === AS_IS
                                 ? converterMap[targetCase](
-                                    this.replaceWordsForConvert
+                                    this.replaceWordsForConversion
                                   )
                                 : this.caseConverterSelected(
-                                    this.replaceWordsForConvert
+                                    this.replaceWordsForConversion
                                   )}
                             </code>
                           </SearchReplacePreview>
