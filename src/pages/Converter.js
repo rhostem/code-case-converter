@@ -148,7 +148,7 @@ class Converter extends Component {
   }
 
   get replace() {
-    return this.state.replace || this.state.search
+    return this.state.replace
   }
 
   get isSearchNormalCase() {
@@ -553,7 +553,7 @@ class Converter extends Component {
           <ReplacePreviewContainer>
             <SectionTitle>Preview</SectionTitle>
             {R.not(this.state.search) ? (
-              <div>there is no input</div>
+              <div>There is no input</div>
             ) : (
               <div>
                 {this.isSearchNormalCase && (
