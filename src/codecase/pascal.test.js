@@ -1,4 +1,4 @@
-import { isPascalCase, splitPascalCase, convertToPascal } from './pascal'
+import { isPascal, splitPascal, convertToPascal } from './pascal'
 import {
   WORDS_SAMPLE,
   WORDS_WITH_NUM,
@@ -12,22 +12,22 @@ import {
 
 describe('pascal', () => {
   test('is pascal', () => {
-    expect(isPascalCase(PASCAL_SAMPLE)).toBe(true)
-    expect(isPascalCase(PASCAL_WITH_NUM)).toBe(true)
-    expect(isPascalCase('LastOne1')).toBe(true)
+    expect(isPascal(PASCAL_SAMPLE)).toBe(true)
+    expect(isPascal(PASCAL_WITH_NUM)).toBe(true)
+    expect(isPascal('LastOne1')).toBe(true)
   })
 
   test('is not pascal', () => {
-    expect(isPascalCase(CAMEL_SAMPLE)).toBe(false)
-    expect(isPascalCase(SNAKE_SAMPLE)).toBe(false)
-    expect(isPascalCase(CONSTANT_SAMPLE)).toBe(false)
-    expect(isPascalCase(KEBAB_SAMPLE)).toBe(false)
+    expect(isPascal(CAMEL_SAMPLE)).toBe(false)
+    expect(isPascal(SNAKE_SAMPLE)).toBe(false)
+    expect(isPascal(CONSTANT_SAMPLE)).toBe(false)
+    expect(isPascal(KEBAB_SAMPLE)).toBe(false)
   })
 
   test('separate word into array of lowercase', () => {
-    expect(splitPascalCase(PASCAL_SAMPLE)).toEqual(WORDS_SAMPLE)
-    expect(splitPascalCase(PASCAL_WITH_NUM)).toEqual(WORDS_WITH_NUM)
-    expect(splitPascalCase('LastOne1')).toEqual(['last', 'one1'])
+    expect(splitPascal(PASCAL_SAMPLE)).toEqual(WORDS_SAMPLE)
+    expect(splitPascal(PASCAL_WITH_NUM)).toEqual(WORDS_WITH_NUM)
+    expect(splitPascal('LastOne1')).toEqual(['last', 'one1'])
   })
 
   test('convert to camel case', () => {

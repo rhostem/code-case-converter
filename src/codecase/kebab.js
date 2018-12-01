@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
-export function isKebabCase(str = '') {
+export function isKebab(str = '') {
   return /\b([a-z][a-z0-9]+(?:-[a-z][a-z0-9]+)+)/.test(str)
 }
 
@@ -9,8 +9,8 @@ export function isKebabCase(str = '') {
  * split Kebab case to array of lowercase word without underscore
  * @param {*} str
  */
-export function splitKebabCase(str) {
-  if (isKebabCase(str)) {
+export function splitKebab(str) {
+  if (isKebab(str)) {
     return str
       .split(/(?=-[a-z0-9]+)/g)
       .map(R.toLower)

@@ -1,4 +1,4 @@
-import { isSnakeCase, splitSnakeCase, convertToSnake } from './snake'
+import { isSnake, splitPascal, convertToSnake } from './snake'
 import {
   WORDS_SAMPLE,
   WORDS_WITH_NUM,
@@ -12,22 +12,22 @@ import {
 
 describe('snake case', () => {
   test('is snake case', () => {
-    expect(isSnakeCase(SNAKE_SAMPLE)).toBe(true)
-    expect(isSnakeCase(SNAKE_WITH_NUM)).toBe(true)
-    expect(isSnakeCase('last_one_1')).toBe(true)
+    expect(isSnake(SNAKE_SAMPLE)).toBe(true)
+    expect(isSnake(SNAKE_WITH_NUM)).toBe(true)
+    expect(isSnake('last_one_1')).toBe(true)
   })
 
   test('is not snake case', () => {
-    expect(isSnakeCase(CAMEL_SAMPLE)).toBe(false)
-    expect(isSnakeCase(PASCAL_SAMPLE)).toBe(false)
-    expect(isSnakeCase(CONSTANT_SAMPLE)).toBe(false)
-    expect(isSnakeCase(KEBAB_SAMPLE)).toBe(false)
+    expect(isSnake(CAMEL_SAMPLE)).toBe(false)
+    expect(isSnake(PASCAL_SAMPLE)).toBe(false)
+    expect(isSnake(CONSTANT_SAMPLE)).toBe(false)
+    expect(isSnake(KEBAB_SAMPLE)).toBe(false)
   })
 
   test('separate snake case string into array of lowercase', () => {
-    expect(splitSnakeCase(SNAKE_SAMPLE)).toEqual(WORDS_SAMPLE)
-    expect(splitSnakeCase(SNAKE_WITH_NUM)).toEqual(WORDS_WITH_NUM)
-    expect(splitSnakeCase('last_one_1')).toEqual(['last', 'one', '1'])
+    expect(splitPascal(SNAKE_SAMPLE)).toEqual(WORDS_SAMPLE)
+    expect(splitPascal(SNAKE_WITH_NUM)).toEqual(WORDS_WITH_NUM)
+    expect(splitPascal('last_one_1')).toEqual(['last', 'one', '1'])
   })
 
   test('convert to snakecase', () => {

@@ -1,12 +1,12 @@
 import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
-export function isPascalCase(str = '') {
+export function isPascal(str = '') {
   return /\b([A-Z][a-z0-9]+([A-Z][a-z0-9]+)+)/.test(str)
 }
 
-export function splitPascalCase(str = '') {
-  if (isPascalCase(str)) {
+export function splitPascal(str = '') {
+  if (isPascal(str)) {
     return str.split(/\B(?=[A-Z][a-z]+)/g).map(R.toLower)
   } else {
     return [str]

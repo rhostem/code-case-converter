@@ -7,24 +7,25 @@ import Input from '../components/Input'
 import RadioGroup from '../components/RadioGroup'
 import * as R from 'ramda'
 import { Page } from '../components/Layout'
-import { isCamelCase, convertToCamel, splitCamelCase } from '../codecase/camel'
-import {
-  isConstantCase,
-  convertToConstant,
-  splitConstantCase,
-} from '../codecase/constant'
-import { isKebabCase, splitKebabCase, convertToKebab } from '../codecase/kebab'
-import {
-  isPascalCase,
-  splitPascalCase,
-  convertToPascal,
-} from '../codecase/pascal'
-import { isSnakeCase, splitSnakeCase, convertToSnake } from '../codecase/snake'
-import keyProxy from '../utils/keyProxy'
+import { isCamel, convertToCamel } from '../codecase/camel'
+import { isConstant, convertToConstant } from '../codecase/constant'
+import { isKebab, convertToKebab } from '../codecase/kebab'
+import { isPascal, convertToPascal } from '../codecase/pascal'
+import { isSnake, convertToSnake } from '../codecase/snake'
+import { splitWordToConvert } from '../codecase/util'
 import { replacer } from '../codecase/replacer'
 import media from '../styles/media'
+import keyProxy from '../utils/keyProxy'
 
 const { ALL_CASE, AS_IS, CAMEL, PASCAL, CONSTANT, KEBAB, SNAKE } = keyProxy
+
+const converterMap = {
+  [CAMEL]: convertToCamel,
+  [PASCAL]: convertToPascal,
+  [CONSTANT]: convertToConstant,
+  [KEBAB]: convertToKebab,
+  [SNAKE]: convertToSnake,
+}
 
 const PageTitle = styled.h1`
   font-size: 2.2rem;
@@ -147,67 +148,79 @@ class Converter extends Component {
     }
   }
 
+  searchTargetCases = [ALL_CASE, CAMEL, PASCAL, CONSTANT, KEBAB, SNAKE]
+  replaceTargetCases = [AS_IS, CAMEL, PASCAL, CONSTANT, KEBAB, SNAKE]
+
   get replace() {
     return this.state.replace
+  }
+
+  /**
+   * case converters selected by user
+   */
+  get replaceConverters() {
+    const { replaceCaseOption } = this.state
+
+    switch (replaceCaseOption) {
+      case AS_IS:
+        return [
+          convertToCamel,
+          convertToPascal,
+          convertToConstant,
+          convertToKebab,
+          convertToSnake,
+        ]
+      case CAMEL:
+        return [convertToCamel]
+
+      case PASCAL:
+        return [convertToPascal]
+
+      case CONSTANT:
+        return [convertToConstant]
+
+      case KEBAB:
+        return [convertToKebab]
+
+      case SNAKE:
+        return [convertToSnake]
+
+      default:
+        return [R.identity]
+    }
   }
 
   get isSearchNormalCase() {
     return R.allPass([
       R.compose(
         R.not,
-        isCamelCase
+        isCamel
       ),
       R.compose(
         R.not,
-        isConstantCase
+        isConstant
       ),
       R.compose(
         R.not,
-        isKebabCase
+        isKebab
       ),
       R.compose(
         R.not,
-        isPascalCase
+        isPascal
       ),
       R.compose(
         R.not,
-        isSnakeCase
+        isSnake
       ),
     ])(this.state.search)
   }
 
-  get searchWords() {
-    const { search } = this.state
-    if (isCamelCase(search)) {
-      return splitCamelCase(search)
-    } else if (isConstantCase(search)) {
-      return splitConstantCase(search)
-    } else if (isKebabCase(search)) {
-      return splitKebabCase(search)
-    } else if (isPascalCase(search)) {
-      return splitPascalCase(search)
-    } else if (isSnakeCase(search)) {
-      return splitSnakeCase(search)
-    } else {
-      return [search]
-    }
+  get searchWordsForConvert() {
+    return splitWordToConvert(this.state.search)
   }
 
-  get replaceWords() {
-    const { replace } = this
-    if (isCamelCase(replace)) {
-      return splitCamelCase(replace)
-    } else if (isConstantCase(replace)) {
-      return splitConstantCase(replace)
-    } else if (isKebabCase(replace)) {
-      return splitKebabCase(replace)
-    } else if (isPascalCase(replace)) {
-      return splitPascalCase(replace)
-    } else if (isSnakeCase(replace)) {
-      return splitSnakeCase(replace)
-    } else {
-      return [replace]
-    }
+  get replaceWordsForConvert() {
+    return splitWordToConvert(this.state.replace)
   }
 
   get caseConverterSelected() {
@@ -275,38 +288,38 @@ class Converter extends Component {
       if (this.state.searchCaseOption === ALL_CASE) {
         resultText = replacer(
           resultText,
-          convertToCamel(this.searchWords),
+          convertToCamel(this.searchWordsForConvert),
           replaceCaseOption === AS_IS
-            ? convertToCamel(this.replaceWords)
-            : this.caseConverterSelected(this.replaceWords)
+            ? convertToCamel(this.replaceWordsForConvert)
+            : this.caseConverterSelected(this.replaceWordsForConvert)
         )
         resultText = replacer(
           resultText,
-          convertToConstant(this.searchWords),
+          convertToConstant(this.searchWordsForConvert),
           replaceCaseOption === AS_IS
-            ? convertToConstant(this.replaceWords)
-            : this.caseConverterSelected(this.replaceWords)
+            ? convertToConstant(this.replaceWordsForConvert)
+            : this.caseConverterSelected(this.replaceWordsForConvert)
         )
         resultText = replacer(
           resultText,
-          convertToPascal(this.searchWords),
+          convertToPascal(this.searchWordsForConvert),
           replaceCaseOption === AS_IS
-            ? convertToPascal(this.replaceWords)
-            : this.caseConverterSelected(this.replaceWords)
+            ? convertToPascal(this.replaceWordsForConvert)
+            : this.caseConverterSelected(this.replaceWordsForConvert)
         )
         resultText = replacer(
           resultText,
-          convertToKebab(this.searchWords),
+          convertToKebab(this.searchWordsForConvert),
           replaceCaseOption === AS_IS
-            ? convertToKebab(this.replaceWords)
-            : this.caseConverterSelected(this.replaceWords)
+            ? convertToKebab(this.replaceWordsForConvert)
+            : this.caseConverterSelected(this.replaceWordsForConvert)
         )
         resultText = replacer(
           resultText,
-          convertToSnake(this.searchWords),
+          convertToSnake(this.searchWordsForConvert),
           replaceCaseOption === AS_IS
-            ? convertToSnake(this.replaceWords)
-            : this.caseConverterSelected(this.replaceWords)
+            ? convertToSnake(this.replaceWordsForConvert)
+            : this.caseConverterSelected(this.replaceWordsForConvert)
         )
       } else {
         // convert specific case of searching
@@ -314,50 +327,50 @@ class Converter extends Component {
           case CAMEL:
             resultText = replacer(
               resultText,
-              convertToCamel(this.searchWords),
+              convertToCamel(this.searchWordsForConvert),
               replaceCaseOption === AS_IS
-                ? convertToCamel(this.replaceWords)
-                : this.caseConverterSelected(this.replaceWords)
+                ? convertToCamel(this.replaceWordsForConvert)
+                : this.caseConverterSelected(this.replaceWordsForConvert)
             )
             break
 
           case PASCAL:
             resultText = replacer(
               resultText,
-              convertToPascal(this.searchWords),
+              convertToPascal(this.searchWordsForConvert),
               replaceCaseOption === AS_IS
-                ? convertToPascal(this.replaceWords)
-                : this.caseConverterSelected(this.replaceWords)
+                ? convertToPascal(this.replaceWordsForConvert)
+                : this.caseConverterSelected(this.replaceWordsForConvert)
             )
             break
 
           case CONSTANT:
             resultText = replacer(
               resultText,
-              convertToConstant(this.searchWords),
+              convertToConstant(this.searchWordsForConvert),
               replaceCaseOption === AS_IS
-                ? convertToConstant(this.replaceWords)
-                : this.caseConverterSelected(this.replaceWords)
+                ? convertToConstant(this.replaceWordsForConvert)
+                : this.caseConverterSelected(this.replaceWordsForConvert)
             )
             break
 
           case KEBAB:
             resultText = replacer(
               resultText,
-              convertToKebab(this.searchWords),
+              convertToKebab(this.searchWordsForConvert),
               replaceCaseOption === AS_IS
-                ? convertToKebab(this.replaceWords)
-                : this.caseConverterSelected(this.replaceWords)
+                ? convertToKebab(this.replaceWordsForConvert)
+                : this.caseConverterSelected(this.replaceWordsForConvert)
             )
             break
 
           case SNAKE:
             resultText = replacer(
               resultText,
-              convertToSnake(this.searchWords),
+              convertToSnake(this.searchWordsForConvert),
               replaceCaseOption === AS_IS
-                ? convertToSnake(this.replaceWords)
-                : this.caseConverterSelected(this.replaceWords)
+                ? convertToSnake(this.replaceWordsForConvert)
+                : this.caseConverterSelected(this.replaceWordsForConvert)
             )
             break
 
@@ -371,6 +384,8 @@ class Converter extends Component {
       resultText,
     })
   }
+
+  replaceWithSelectedConverters = () => {}
 
   render() {
     const { searchCaseOption, replaceCaseOption } = this.state
@@ -391,78 +406,25 @@ class Converter extends Component {
                   onChange={this.handleChangeSearch}
                 />
               </SearchInputWrap>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="search_all_case"
-                  name="search_option"
-                  value={ALL_CASE}
-                  disabled={this.isSearchNormalCase}
-                  checked={searchCaseOption === ALL_CASE}
-                  onChange={() => this.setState({ searchCaseOption: ALL_CASE })}
-                />
-                <label htmlFor="search_all_case">All cases</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="search_camel"
-                  name="search_option"
-                  value={CAMEL}
-                  disabled={this.isSearchNormalCase}
-                  checked={searchCaseOption === CAMEL}
-                  onChange={() => this.setState({ searchCaseOption: CAMEL })}
-                />
-                <label htmlFor="search_camel">camel</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="search_pascal"
-                  name="search_option"
-                  value={PASCAL}
-                  disabled={this.isSearchNormalCase}
-                  checked={searchCaseOption === PASCAL}
-                  onChange={() => this.setState({ searchCaseOption: PASCAL })}
-                />
-                <label htmlFor="search_pascal">pascal</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="search_constant"
-                  name="search_option"
-                  value={CONSTANT}
-                  disabled={this.isSearchNormalCase}
-                  checked={searchCaseOption === CONSTANT}
-                  onChange={() => this.setState({ searchCaseOption: CONSTANT })}
-                />
-                <label htmlFor="search_constant">constant</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="search_kebab"
-                  name="search_option"
-                  value={KEBAB}
-                  disabled={this.isSearchNormalCase}
-                  checked={searchCaseOption === KEBAB}
-                  onChange={() => this.setState({ searchCaseOption: KEBAB })}
-                />
-                <label htmlFor="search_kebab">kebab</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="search_snake"
-                  name="search_option"
-                  value={SNAKE}
-                  disabled={this.isSearchNormalCase}
-                  checked={searchCaseOption === SNAKE}
-                  onChange={() => this.setState({ searchCaseOption: SNAKE })}
-                />
-                <label htmlFor="search_snake">snake</label>
-              </RadioGroup>
+
+              {this.searchTargetCases.map((targetCase, index) => {
+                return (
+                  <RadioGroup key={targetCase}>
+                    <input
+                      type="radio"
+                      id={`search-${targetCase}`}
+                      name="search_option"
+                      value={targetCase}
+                      disabled={this.isSearchNormalCase}
+                      checked={this.state.searchCaseOption === targetCase}
+                      onChange={() =>
+                        this.setState({ searchCaseOption: targetCase })
+                      }
+                    />
+                    <label htmlFor={`search-${targetCase}`}>{targetCase}</label>
+                  </RadioGroup>
+                )
+              })}
             </InputAndOption>
 
             <InputAndOption>
@@ -474,79 +436,27 @@ class Converter extends Component {
                   onChange={this.handleChangeReplace}
                 />
               </SearchInputWrap>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="replace_as_is"
-                  name="replace_option"
-                  value={AS_IS}
-                  checked={replaceCaseOption === AS_IS}
-                  onChange={() => this.setState({ replaceCaseOption: AS_IS })}
-                />
-                <label htmlFor="replace_as_is">as-is</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="replace_camel"
-                  name="replace_option"
-                  value={CAMEL}
-                  disabled={this.isSearchNormalCase}
-                  checked={replaceCaseOption === CAMEL}
-                  onChange={() => this.setState({ replaceCaseOption: CAMEL })}
-                />
-                <label htmlFor="replace_camel">camel</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="replace_pascal"
-                  name="replace_option"
-                  value={PASCAL}
-                  disabled={this.isSearchNormalCase}
-                  checked={replaceCaseOption === PASCAL}
-                  onChange={() => this.setState({ replaceCaseOption: PASCAL })}
-                />
-                <label htmlFor="replace_pascal">pascal</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="replace_constant"
-                  name="replace_option"
-                  value={CONSTANT}
-                  disabled={this.isSearchNormalCase}
-                  checked={replaceCaseOption === CONSTANT}
-                  onChange={() =>
-                    this.setState({ replaceCaseOption: CONSTANT })
-                  }
-                />
-                <label htmlFor="replace_constant">constant</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="replace_kebab"
-                  name="replace_option"
-                  value={KEBAB}
-                  disabled={this.isSearchNormalCase}
-                  checked={replaceCaseOption === KEBAB}
-                  onChange={() => this.setState({ replaceCaseOption: KEBAB })}
-                />
-                <label htmlFor="replace_kebab">kebab</label>
-              </RadioGroup>
-              <RadioGroup>
-                <input
-                  type="radio"
-                  id="replace_snake"
-                  name="replace_option"
-                  value={SNAKE}
-                  disabled={this.isSearchNormalCase}
-                  checked={replaceCaseOption === SNAKE}
-                  onChange={() => this.setState({ replaceCaseOption: SNAKE })}
-                />
-                <label htmlFor="replace_snake">snake</label>
-              </RadioGroup>
+
+              {this.replaceTargetCases.map((targetCase, index) => {
+                return (
+                  <RadioGroup key={targetCase}>
+                    <input
+                      type="radio"
+                      id={`replace-${targetCase}`}
+                      name="replace_option"
+                      value={targetCase}
+                      disabled={this.isSearchNormalCase}
+                      checked={this.state.replaceCaseOption === targetCase}
+                      onChange={() =>
+                        this.setState({ replaceCaseOption: targetCase })
+                      }
+                    />
+                    <label htmlFor={`replace-${targetCase}`}>
+                      {targetCase}
+                    </label>
+                  </RadioGroup>
+                )
+              })}
             </InputAndOption>
           </SearchInputContainer>
 
@@ -566,66 +476,33 @@ class Converter extends Component {
 
                 {R.not(this.isSearchNormalCase) && (
                   <React.Fragment>
-                    {(searchCaseOption === ALL_CASE ||
-                      searchCaseOption === CAMEL) && (
-                      <SearchReplacePreview>
-                        <code>{convertToCamel(this.searchWords)}</code>
-                        <code>→</code>
-                        <code>
-                          {replaceCaseOption === AS_IS
-                            ? convertToCamel(this.replaceWords)
-                            : this.caseConverterSelected(this.replaceWords)}
-                        </code>
-                      </SearchReplacePreview>
-                    )}
-                    {(searchCaseOption === ALL_CASE ||
-                      searchCaseOption === PASCAL) && (
-                      <SearchReplacePreview>
-                        <code>{convertToPascal(this.searchWords)}</code>
-                        <code>→</code>
-                        <code>
-                          {replaceCaseOption === AS_IS
-                            ? convertToPascal(this.replaceWords)
-                            : this.caseConverterSelected(this.replaceWords)}
-                        </code>
-                      </SearchReplacePreview>
-                    )}
-                    {(searchCaseOption === ALL_CASE ||
-                      searchCaseOption === CONSTANT) && (
-                      <SearchReplacePreview>
-                        <code>{convertToConstant(this.searchWords)}</code>
-                        <code>→</code>
-                        <code>
-                          {replaceCaseOption === AS_IS
-                            ? convertToConstant(this.replaceWords)
-                            : this.caseConverterSelected(this.replaceWords)}
-                        </code>
-                      </SearchReplacePreview>
-                    )}
-                    {(searchCaseOption === ALL_CASE ||
-                      searchCaseOption === KEBAB) && (
-                      <SearchReplacePreview>
-                        <code>{convertToKebab(this.searchWords)}</code>
-                        <code>→</code>
-                        <code>
-                          {replaceCaseOption === AS_IS
-                            ? convertToKebab(this.replaceWords)
-                            : this.caseConverterSelected(this.replaceWords)}
-                        </code>
-                      </SearchReplacePreview>
-                    )}
-                    {(searchCaseOption === ALL_CASE ||
-                      searchCaseOption === SNAKE) && (
-                      <SearchReplacePreview>
-                        <code>{convertToSnake(this.searchWords)}</code>
-                        <code>→</code>
-                        <code>
-                          {replaceCaseOption === AS_IS
-                            ? convertToSnake(this.replaceWords)
-                            : this.caseConverterSelected(this.replaceWords)}
-                        </code>
-                      </SearchReplacePreview>
-                    )}
+                    {this.replaceTargetCases.map(targetCase => {
+                      const converter = converterMap[targetCase]
+
+                      return (
+                        converter &&
+                        ((searchCaseOption === ALL_CASE ||
+                          searchCaseOption === targetCase) && (
+                          <SearchReplacePreview key={targetCase}>
+                            <code>
+                              {converterMap[targetCase](
+                                this.searchWordsForConvert
+                              )}
+                            </code>
+                            <code>→</code>
+                            <code>
+                              {replaceCaseOption === AS_IS
+                                ? converterMap[targetCase](
+                                    this.replaceWordsForConvert
+                                  )
+                                : this.caseConverterSelected(
+                                    this.replaceWordsForConvert
+                                  )}
+                            </code>
+                          </SearchReplacePreview>
+                        ))
+                      )
+                    })}
                   </React.Fragment>
                 )}
               </div>

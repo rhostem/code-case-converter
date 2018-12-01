@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
-export function isCamelCase(str = '') {
+export function isCamel(str = '') {
   return /\b([a-z][a-z0-9]+(?:[A-Z][a-z0-9]+)+)/.test(str)
 }
 
@@ -9,8 +9,8 @@ export function isCamelCase(str = '') {
  * split camel case string to array of lowercase word
  * @param {*} str
  */
-export function splitCamelCase(str) {
-  if (isCamelCase(str)) {
+export function splitCamel(str) {
+  if (isCamel(str)) {
     return str.split(/\B(?=[A-Z][a-z]+)/g).map(R.toLower)
   } else {
     return [str]

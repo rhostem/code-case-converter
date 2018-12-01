@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
-export function isSnakeCase(str = '') {
+export function isSnake(str = '') {
   return /\b([a-z][a-z0-9]+(?:_[a-z0-9]+)+)/.test(str)
 }
 
@@ -9,8 +9,8 @@ export function isSnakeCase(str = '') {
  * split Snake case to array of lowercase word without underscore
  * @param {*} str
  */
-export function splitSnakeCase(str) {
-  if (isSnakeCase(str)) {
+export function splitSnake(str) {
+  if (isSnake(str)) {
     return str
       .split(/(?=_[a-z0-9]+)/g)
       .map(R.toLower)

@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import { prepareWordsForConversion } from './util'
 
-export function isConstantCase(str = '') {
+export function isConstant(str = '') {
   return /\b([A-Z][A-Z0-9]+(?:_[A-Z0-9]+)+)/.test(str)
 }
 
@@ -9,8 +9,8 @@ export function isConstantCase(str = '') {
  * split constant case to array of lowercase word without underscore
  * @param {*} str
  */
-export function splitConstantCase(str) {
-  if (isConstantCase(str)) {
+export function splitConstant(str) {
+  if (isConstant(str)) {
     return str
       .split(/\B(?=_[A-Z0-9]+)/g)
       .map(R.toLower)

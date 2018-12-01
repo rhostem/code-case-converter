@@ -1,4 +1,9 @@
 import * as R from 'ramda'
+import { isCamel, splitCamel } from './camel'
+import { isConstant, splitConstant } from './constant'
+import { isKebab, splitKebab } from './kebab'
+import { isPascal, splitPascal } from './pascal'
+import { isSnake, splitSnake } from './snake'
 
 /**
  * prepare for case  conversion
@@ -17,5 +22,21 @@ export function prepareWordsForConversion(words = []) {
   } else {
     console.error('words shoud be an array')
     return words
+  }
+}
+
+export function splitWordToConvert(word) {
+  if (isCamel(word)) {
+    return splitCamel(word)
+  } else if (isConstant(word)) {
+    return splitConstant(word)
+  } else if (isKebab(word)) {
+    return splitKebab(word)
+  } else if (isPascal(word)) {
+    return splitPascal(word)
+  } else if (isSnake(word)) {
+    return splitSnake(word)
+  } else {
+    return [word]
   }
 }
